@@ -14,7 +14,7 @@ h3 {
 	line-height:1.2
 }
 
-code {
+code:not(pre code) {
 	background-color: #eeeeee;
 }
 
