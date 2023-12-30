@@ -6,5 +6,6 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://blocklisted.github.io',
+	base: '/blog',
 	integrations: [mdx(), sitemap()],
 });
