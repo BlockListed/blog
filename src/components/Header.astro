@@ -1,15 +1,10 @@
 ---
-import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
 ---
 
 <header>
 	<nav>
-		<h2><a href="/">{SITE_TITLE}</a></h2>
-		<div class="internal-links">
-			<HeaderLink href="/">Home</HeaderLink>
-			<HeaderLink href="/blog">Blog</HeaderLink>
-		</div>
+		<h2><a href="/blog">{SITE_TITLE}</a></h2>
 	</nav>
 </header>
 <style>
@@ -42,14 +37,5 @@ import { SITE_TITLE } from '../consts';
 	nav a.active {
 		text-decoration: none;
 		border-bottom-color: var(--accent);
-	}
-	.social-links,
-	.social-links a {
-		display: flex;
-	}
-	@media (max-width: 720px) {
-		.social-links {
-			display: none;
-		}
 	}
 </style>
