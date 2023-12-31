@@ -117,8 +117,8 @@ fn bench_clone<T: Clone + Send>(base: T) {
         let running = Arc::new(AtomicBool::new(true));
 
         // This spawns multiple threads spinning on clone to generate lock contention.
-		// We iterate from 1..n to spawn n-1 threads, since one of our threads will
-		// be used for benchmarking.
+        // We iterate from 1..n to spawn n-1 threads, since one of our threads will
+        // be used for benchmarking.
         for _ in 1..total_thread_count() {
             let local_base = base.clone();
             let local_running = running.clone();
@@ -142,8 +142,8 @@ fn bench_clone<T: Clone + Send>(base: T) {
         elapsed
     });
 
-	println!("Took {}ms to perform {} clone operations on {}.",
-		elapsed.as_millis(), samples(), std::any::type_name::<T>());
+    println!("Took {}ms to perform {} clone operations on {}.",
+        elapsed.as_millis(), samples(), std::any::type_name::<T>());
 }
 
 fn run_clone<T: Clone>(base: &T) {
@@ -272,7 +272,7 @@ and &| pipes STDERR to the STDIN of the next process in the pipeline):
 ## Conclusion
 In most cases (when the value is not **extremely** contended) cloning `Arc<str>` is definitely faster than
 `String`, as you can see from the single-threaded result in the benchmark. But if you're cloning data at a
-rate where performance is limited by CPU internal locking, I simply recommend you don't and try something else,
+rate where performance is limited by CPU internal locking, I simply recommend you don't and try something else
 instead of optimising your cloning. And always remember to follow the prime directive of optimisation, measure
 everything, don't just apply "Golden Rules" and assume that everything's now magically faster.
 
