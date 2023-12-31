@@ -6,7 +6,7 @@ pubDate: 'Dec 31 2023'
 import graph from './arc_str_vs_string_graph.png';
 
 I was watching [The Primagen's][6] [reaction][5] to the video ["Use Arc Instead of Vec"][4] by
-[Logan Smith][7], when after [humiliating himself on camera][8], Prime raised the question whether
+[Logan Smith][7], when after [experiencing live-demo-syndrome][8], Prime [raised the question][12] whether
 or not cloning `Arc<str>` is always faster than cloning `String`, which I thought was a proposterous
 question, since `malloc` is obviously slow, since that's what we're always told. "Reduce allocations"
 is almost always the first thing to do when performing non datastructure-related optimisation.
@@ -47,14 +47,16 @@ For more information about this error, try `rustc --explain E0277`.
 
 Well the answer to that is pretty simple: `str` is a [Dynamically Sized Type][9] (or DST for short),
 which is a result of it not implenting `Sized`, which means it can only exist behind a reference
-*or a pointer*. Any pointer to a DST is slightly different from normal pointer by the virtue of
-it being wide pointer, which the [Rustonomicon][10] describes using the following words:
+*or a pointer*, dropping is handled by simply deallocating the pointer. Any pointer to a DST is
+slightly different from normal pointer by the virtue of it being wide pointer, which the [Rustonomicon][10]
+describes using the following words:
 
 > Any pointer to a DST consequently becomes a _wide_ pointer consisting of the pointer and the information that "completes" them.
 
-But believe it or not, but `str` isn't actually special, there are other DSTs such as `[T]` and `dyn Trait`,
-but you can create your own DSTs as well, by having the last field of your struct be a DST. Which is exactly
-what `Arc<T>` does, it's actually represented like this (omitting some irrelevant information):
+But believe it or not, but `str` isn't actually special, there are other DSTs such as `[T]` and `dyn Trait`.
+The information stored in the wide pointer is either the length in the case of `[T]` and `str` or
+the trait [VTable][13] in the case `dyn Trait`. But you can create your own DSTs as well, by having the last field of your struct be a DST.
+Which is exactly what `Arc<T>` does, it's actually represented like this (omitting some irrelevant information):
 ```rust
 pub struct Arc<
     T: ?Sized,
@@ -193,7 +195,7 @@ memory. As you might already know allocating memory from the kernel on Linux
 happens using the `mmap` syscall, which takes time. Therefore the allocator
 attempts to call `mmap` as little as possible, by putting multiple allocations
 into a single `mmap`ed "bucket". Therefore, if we constantly `malloc` then
-immediately `free` the allocated memory, we are always just using already allocated
+immediately `free` the allocated memory, we are always just using _already allocated_
 **thread-local** "buckets" for our allocation, no syscalls involved!
 If we instead leak the memory, the allocator now has to constantly allocate
 new memory using `mmap`, which, while probably amortized using bigger allocations,
@@ -271,7 +273,8 @@ and &| pipes STDERR to the STDIN of the next process in the pipeline):
 In most cases (when the value is not **extremely** contended) cloning `Arc<str>` is definitely faster than
 `String`, as you can see from the single-threaded result in the benchmark. But if you're cloning data at a
 rate where performance is limited by CPU internal locking, I simply recommend you don't and try something else,
-instead of optimising your cloning.
+instead of optimising your cloning. And always remember to follow the prime directive of optimisation, measure
+everything, don't just apply "Golden Rules" and assume that everything's now magically faster.
 
 [1]: https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html
 [2]: https://old.reddit.com/r/AV1/comments/msb74a/shrek_but_its_8mb_again/
@@ -284,3 +287,5 @@ instead of optimising your cloning.
 [9]: https://doc.rust-lang.org/nomicon/exotic-sizes.html#dynamically-sized-types-dsts
 [10]: https://doc.rust-lang.org/nomicon/
 [11]: https://doc.rust-lang.org/stable/std/sync/struct.Arc.html
+[12]: https://www.youtube.com/watch?v=OMmMfGaeRyI&t=1779s
+[13]: https://doc.rust-lang.org/reference/types/trait-object.html
