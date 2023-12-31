@@ -276,6 +276,9 @@ rate where performance is limited by CPU internal locking, I simply recommend yo
 instead of optimising your cloning. And always remember to follow the prime directive of optimisation, measure
 everything, don't just apply "Golden Rules" and assume that everything's now magically faster.
 
+## Notes
+- Someone asked why I'm not including `Rc<str>` in this comparison, the reason is single-threaded `Arc<str>` has a pretty similar performance profile.
+
 [1]: https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html
 [2]: https://old.reddit.com/r/AV1/comments/msb74a/shrek_but_its_8mb_again/
 [3]: https://github.com/BlockListed/arc_str_perf/
