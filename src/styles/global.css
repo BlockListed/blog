@@ -33,7 +33,7 @@ img {
 	a:visited {
 		color:#8e96f0
 	}
-	code {
+	code:not(pre code) {
 		background-color: #11161e;
 	}
 }
