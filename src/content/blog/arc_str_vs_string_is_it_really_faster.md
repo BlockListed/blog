@@ -3,8 +3,6 @@ title: Arc<str> vs String, is Arc<str> really faster?
 description: Analysis of Arc<str> vs String cloning performance in contentended scenarios.
 pubDate: 'Dec 31 2023'
 ---
-import graph from './arc_str_vs_string_graph.png';
-
 I was watching [The Primagen's][6] [reaction][5] to the video ["Use Arc Instead of Vec"][4] by
 [Logan Smith][7], when after [experiencing live-demo-syndrome][8], Prime [raised the question][12] whether
 or not cloning `Arc<str>` is always faster than cloning `String`, which I thought was a proposterous
@@ -168,7 +166,7 @@ The system I tested this on has the following specs:
 The left-most column shows the amount of threads used for the test. The next column shows
 the cloned type `Arc<str>` or `String` and whether we drop the value after cloning. `_TRUE` means
 we drop and `_FALSE` means we don't. Time is displayed in milliseconds.
-<img src={graph.src} alt="Chart showing performance differences between Arc<str>- and String-cloning" />
+![Chart showing performance differences between Arc<str>- and String-cloning](/blog/assets/arc_str_vs_string_graph.png)
 As you can see, our expectations are only representative of reality, when a single
 thread accesses the `Arc<str>`. As soon as multiple threads are contending
 for the `Arc<str>`, we start having issues and the performance of `String`
