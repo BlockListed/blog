@@ -1,3 +1,0 @@
-[submodule "src/content/blog_content"]
-	path = src/content/blog_content
-	url = https://github.com/BlockListed/blog_content.git
